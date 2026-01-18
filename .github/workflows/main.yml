@@ -70,6 +70,22 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      - name: Show server info before deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            echo "=== Server IP ==="
+            hostname -I | awk '{print $1}'
+            echo ""
+            echo "=== Docker containers ==="
+            sudo docker ps -a --format "table {{.Names}}\t{{.Status}}\t{{.Image}}"
+            echo ""
+            echo "=== Current dir ==="
+            pwd
+            ls -la
       - name: Copy docker-compose.yml via ssh
         uses: appleboy/scp-action@master
         with:
