@@ -34,7 +34,7 @@ services:
       - backend
 
   gateway:
-    image: ${DOCKERHUB_USERNAME}/kittygram_gateway:latest
+    image: stroge27/kittygram_gateway:latest
     restart: always
     ports:
       - "80:80"
@@ -42,8 +42,8 @@ services:
       - backend
       - frontend
     volumes:
-      - static:/var/html/static/
-      - media:/var/html/media/
+      - static:/app/static/
+      - media:/app/media/
 
 volumes:
   pg_data:
