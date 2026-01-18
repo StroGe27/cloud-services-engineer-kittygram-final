@@ -1,0 +1,142 @@
+name: Kittygram CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  # tests:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v4
+  #       with:
+  #         python-version: '3.10'
+  #     - name: Install dependencies
+  #       run: |
+  #         cd backend
+  #         pip install -r requirements.txt
+  #     - name: Run PEP8
+  #       uses: quentinguidee/pep8-action@v1
+  #       with:
+  #         arguments: 'backend --max-line-length=120 --exclude=backend/migrations'
+  #     - name: Run tests
+  #       run: |
+  #         pip install pytest pytest-django
+  #         pytest
+
+  # build_and_push_to_docker_hub:
+  #   name: Push Docker image to DockerHub
+  #   runs-on: ubuntu-latest
+  #   # needs: tests
+  #   steps:
+  #     - name: Check out the repo
+  #       uses: actions/checkout@v3
+  #     - name: Set up Docker Buildx
+  #       uses: docker/setup-buildx-action@v2
+  #     - name: Login to Docker 
+  #       uses: docker/login-action@v2
+  #       with:
+  #         username: ${{ secrets.DOCKER_USERNAME }}
+  #         password: ${{ secrets.DOCKER_PASSWORD }}
+  #     - name: Push backend to DockerHub
+  #       uses: docker/build-push-action@v4
+  #       with:
+  #         context: ./backend/
+  #         push: true
+  #         tags: ${{ secrets.DOCKER_USERNAME }}/kittygram_backend:latest
+  #     - name: Push frontend to DockerHub
+  #       uses: docker/build-push-action@v4
+  #       with:
+  #         context: ./frontend/
+  #         push: true
+  #         tags: ${{ secrets.DOCKER_USERNAME }}/kittygram_frontend:latest
+  #     - name: Push gateway to DockerHub
+  #       uses: docker/build-push-action@v4
+  #       with:
+  #         context: ./nginx/
+  #         push: true
+  #         tags: ${{ secrets.DOCKER_USERNAME }}/kittygram_gateway:latest
+
+  deploy:
+    # needs:
+    #   - build_and_push_to_docker_hub
+    #   - build_frontend_and_push_to_docker_hub
+    #   - build_gateway_and_push_to_docker_hub
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          # debug: true
+          source: "docker-compose.production.yml"
+          target: "/tmp/docker-compose.production.yml"
+      # - name: Executing remote ssh commands to deploy
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     host: 194.87.31.57
+      #     username: root
+      #     key: ${{ secrets.SSH_KEY }}
+      #     # passphrase: ${{ secrets.SSH_PASSPHRASE }}
+      #     # Параметр script передаёт в action appleboy/ssh-action команды,
+      #     # которые нужно выполнить на сервере, 
+      #     # с которым установлено соединение:
+      #     script: |
+      #       cd /tmp/
+      #       # Выполняет pull образов с Docker Hub
+      #       sudo docker compose -f docker-compose.production.yml pull
+      #       # Перезапускает все контейнеры в Docker Compose
+      #       sudo docker compose -f docker-compose.production.yml down
+      #       sudo docker compose -f docker-compose.production.yml up -d
+      #       # Выполняет миграции и сбор статики
+      #       sudo docker compose -f docker-compose.production.yml exec backend python manage.py migrate
+      #       sudo docker compose -f docker-compose.production.yml exec backend python manage.py collectstatic
+      #       sudo docker compose -f docker-compose.production.yml exec backend cp -r /app/collected_static/. /backend_static/static/
+
+  # post_deploy_tests:
+  #   needs: deploy
+  #   runs-on: ubuntu-latest
+  #   if: github.ref == 'refs/heads/main'
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
+
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v4
+  #       with:
+  #         python-version: '3.10'
+
+  #     - name: Install dependencies
+  #       run: |
+  #         cd backend
+  #         pip install -r requirements.txt
+  #         pip install pytest pytest-django
+
+  #     - name: Run post-deploy tests
+  #       run: |
+  #         pytest tests/test_connection.py tests/test_dockerhub_images.py -v
+
+  # notify:
+  #   needs: post_deploy_tests
+  #   runs-on: ubuntu-latest
+  #   if: github.ref == 'refs/heads/main' && success()
+  #   steps:
+  #     - name: Send Telegram notification
+  #       uses: appleboy/telegram-action@master
+  #       with:
+  #         to: ${{ secrets.TELEGRAM_CHAT_ID }}
+  #         token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+  #         message: |
+  #           ✅ Деплой Kittygram успешно завершен!
+            
+  #           Репозиторий: ${{ github.repository }}
+  #           Коммит: ${{ github.sha }}
+  #           Автор: ${{ github.actor }}

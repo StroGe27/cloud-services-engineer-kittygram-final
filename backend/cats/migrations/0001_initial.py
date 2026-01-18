@@ -36,8 +36,14 @@ class Migration(migrations.Migration):
                 ('color', models.CharField(max_length=16)),
                 ('birth_year', models.IntegerField()),
                 ('image', models.ImageField(default=None, null=True, upload_to='cats/images/')),
-                ('achievements', models.ManyToManyField(through='cats.AchievementCat', to='cats.Achievement')),
-                ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='cats', to=settings.AUTH_USER_MODEL)),
+                ('achievements', models.ManyToManyField(
+                    through='cats.AchievementCat', to='cats.Achievement'
+                )),
+                ('owner', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    related_name='cats',
+                    to=settings.AUTH_USER_MODEL
+                )),
             ],
         ),
         migrations.AddField(
