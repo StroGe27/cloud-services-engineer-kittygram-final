@@ -18,8 +18,8 @@ services:
     command: sh -c "python manage.py collectstatic --noinput && python manage.py migrate && python manage.py runserver 0.0.0.0:9000"
     restart: always
     volumes:
-      - static:/app/static/
-      - media:/app/media/
+      - static:/backend_static
+      - media:/app/media
     depends_on:
       postgres:
         condition: service_healthy
@@ -29,12 +29,14 @@ services:
     command: sh -c "npx http-server /app/build -p 8000"
     restart: always
     volumes:
-      - static:/app/static/
+      - static:/frontend_static
     depends_on:
       - backend
 
   gateway:
     image: stroge27/kittygram_gateway:latest
+    env_file:
+      - .env
     restart: always
     ports:
       - "80:80"
@@ -42,8 +44,8 @@ services:
       - backend
       - frontend
     volumes:
-      - static:/app/static/
-      - media:/app/media/
+      - static:/staticfiles
+      - media:/app/media
 
 volumes:
   pg_data:
