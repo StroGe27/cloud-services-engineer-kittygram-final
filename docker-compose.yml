@@ -35,7 +35,7 @@ services:
     command: sh -c "npx http-server /app/build -p 8000"
     restart: always
     volumes:
-      - static:/app/static/
+      - static:/app/static
     depends_on:
       - backend
 
