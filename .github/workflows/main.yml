@@ -70,13 +70,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Deploy to server
-        uses: appleboy/ssh-action@master
+      - name: Copy docker-compose.yml via ssh
+        uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          # debug: true
           source: "docker-compose.production.yml"
           target: "/tmp/docker-compose.production.yml"
       # - name: Executing remote ssh commands to deploy
