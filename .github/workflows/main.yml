@@ -78,27 +78,23 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           source: "docker-compose.production.yml"
           target: "/tmp/docker-compose.production.yml"
-      # - name: Executing remote ssh commands to deploy
-      #   uses: appleboy/ssh-action@master
-      #   with:
-      #     host: 194.87.31.57
-      #     username: root
-      #     key: ${{ secrets.SSH_KEY }}
-      #     # passphrase: ${{ secrets.SSH_PASSPHRASE }}
-      #     # Параметр script передаёт в action appleboy/ssh-action команды,
-      #     # которые нужно выполнить на сервере, 
-      #     # с которым установлено соединение:
-      #     script: |
-      #       cd /tmp/
-      #       # Выполняет pull образов с Docker Hub
-      #       sudo docker compose -f docker-compose.production.yml pull
-      #       # Перезапускает все контейнеры в Docker Compose
-      #       sudo docker compose -f docker-compose.production.yml down
-      #       sudo docker compose -f docker-compose.production.yml up -d
-      #       # Выполняет миграции и сбор статики
-      #       sudo docker compose -f docker-compose.production.yml exec backend python manage.py migrate
-      #       sudo docker compose -f docker-compose.production.yml exec backend python manage.py collectstatic
-      #       sudo docker compose -f docker-compose.production.yml exec backend cp -r /app/collected_static/. /backend_static/static/
+      - name: Executing remote ssh commands to deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd /tmp/
+            # Выполняет pull образов с Docker Hub
+            sudo docker compose -f docker-compose.production.yml pull
+            # Перезапускает все контейнеры в Docker Compose
+            sudo docker compose -f docker-compose.production.yml down
+            sudo docker compose -f docker-compose.production.yml up -d
+            # Выполняет миграции и сбор статики
+            sudo docker compose -f docker-compose.production.yml exec backend python manage.py migrate
+            sudo docker compose -f docker-compose.production.yml exec backend python manage.py collectstatic
+            sudo docker compose -f docker-compose.production.yml exec backend cp -r /app/collected_static/. /backend_static/static/
 
   # post_deploy_tests:
   #   needs: deploy
