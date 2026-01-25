@@ -1,3 +1,8 @@
+volumes:
+  pg_data:
+  static:
+  media:
+
 services:
   postgres:
     image: postgres:13
@@ -12,7 +17,7 @@ services:
       retries: 30
 
   backend:
-    # image: ${DOCKERHUB_USERNAME}/kittygram_backend:latest
+    # image: stroge27/kittygram_backend:latest
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -21,40 +26,37 @@ services:
     command: sh -c "python manage.py collectstatic --noinput && python manage.py migrate && python manage.py runserver 0.0.0.0:9000"
     restart: always
     volumes:
-      - static:/app/static/
-      - media:/app/media/
+      - static:/static
+      - media:/app/media
     depends_on:
       postgres:
         condition: service_healthy
 
   frontend:
-    # image: ${DOCKERHUB_USERNAME}/kittygram_frontend:latest
+    # image: stroge27/kittygram_frontend:latest
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    command: sh -c "npx http-server /app/build -p 8000"
-    restart: always
+    command: sh -c "cp -r /app/build/. /static/"
+    restart: no
     volumes:
-      - static:/app/static
+      - static:/static
     depends_on:
       - backend
 
   gateway:
-    # image: ${DOCKERHUB_USERNAME}/kittygram_gateway:latest
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
+    # image: stroge27/kittygram_gateway:latest
+    build: ./nginx/
+    env_file:
+      - .env
     restart: always
     ports:
       - "80:80"
     depends_on:
-      - backend
-      - frontend
+      frontend:
+        condition: service_completed_successfully
+      backend:
+        condition: service_started
     volumes:
-      - static:/var/html/static/
-      - media:/var/html/media/
-
-volumes:
-  pg_data:
-  static:
-  media:
+      - static:/static
+      - media:/app/media

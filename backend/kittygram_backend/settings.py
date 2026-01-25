@@ -61,12 +61,12 @@ WSGI_APPLICATION = 'kittygram_backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_DB', 'kittygram'),
-        'USER': os.getenv('POSTGRES_USER', 'kittygram_user'),
+        'ENGINE':   'django.db.backends.postgresql',
+        'NAME':     os.getenv('POSTGRES_DB', 'kittygram_db'),
+        'USER':     os.getenv('POSTGRES_USER', 'kittygram_user'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'kittygram_password'),
-        'HOST': os.getenv('DB_HOST', 'db'),
-        'PORT': os.getenv('DB_PORT', 5432)
+        'HOST':     os.getenv('POSTGRES_HOST', 'localhost'),
+        'PORT':     os.getenv('POSTGRES_PORT', 5432)
     }
 }
 
@@ -98,10 +98,12 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
-STATIC_ROOT = '/backend_static/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+# STATIC_ROOT = ''
+# STATICFILES_DIRS = ('static',)
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
