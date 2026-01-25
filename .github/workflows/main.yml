@@ -148,8 +148,9 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd kittygram
+            docker compose -f docker-compose.production.yml pull
             docker compose -f docker-compose.production.yml down
-            docker compose -f docker-compose.production.yml up -d
+            docker compose -f docker-compose.production.yml up -d --remove-orphans --force-recreate
 
   notify:
     needs: deploy
