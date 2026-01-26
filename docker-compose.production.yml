@@ -20,10 +20,9 @@ services:
     image: stroge27/kittygram_backend:latest
     env_file:
       - .env
-    command: sh -c "python manage.py collectstatic --noinput && python manage.py migrate && python manage.py runserver 0.0.0.0:9000"
     restart: always
     volumes:
-      - static:/static
+      - static:/backend_static
       - media:/app/media
     depends_on:
       postgres:
@@ -31,7 +30,7 @@ services:
 
   frontend:
     image: stroge27/kittygram_frontend:latest
-    command: sh -c "cp -r /app/build/. /static/"
+    command: sh -c "cp -r /app/build/. /frontend_static/"
     restart: no
     volumes:
       - static:/static
@@ -51,5 +50,5 @@ services:
       backend:
         condition: service_started
     volumes:
-      - static:/static
+      - static:/staticfiles
       - media:/app/media
