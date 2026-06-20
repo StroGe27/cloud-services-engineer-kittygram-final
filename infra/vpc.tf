@@ -15,17 +15,17 @@ resource "yandex_vpc_subnet" "infra_subnet" {
 }
 
 resource "yandex_vpc_security_group" "infra_sg" {
-    name      = "${var.vpc_name}-sg"
+    name       = "${var.vpc_name}-sg"
     network_id = yandex_vpc_network.infra_network.id
 
     egress {
-    protocol = "ANY"
+    protocol       = "ANY"
     v4_cidr_blocks = ["0.0.0.0/0"]
     }
 
     ingress {
-    protocol    = "TCP"
-    port        = "22"
+    protocol       = "TCP"
+    port           = "22"
     v4_cidr_blocks = ["0.0.0.0/0"]
     }
 

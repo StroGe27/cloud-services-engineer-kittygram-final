@@ -4,15 +4,15 @@
 
 variable "vpc_name" {
   description = "VPC Name"
-  type = string
-  default = "infra-network"
+  type        = string
+  default     = "infra-network"
 }
 
 variable "net_cidr" {
   description = "Subnet structure"
   type = list(object({
-    name = string,
-    zone = string,
+    name   = string,
+    zone   = string,
     prefix = string
   }))
 
@@ -24,26 +24,26 @@ variable "net_cidr" {
 }
 
 variable "vm_1_name" {
-  type = string
-  default = "vm-kittygram"
+  type        = string
+  default     = "vm-kittygram"
 }
 
 variable "ssh_key" {
   description = "SSH Public Key"
   sensitive   = true
-  type = string
+  type        = string
   default     = "changeit"
 }
 
 variable "cloud_id" {
   description = "Cloud ID"
-  type = string
+  type        = string
   default     = "changeit"
 }
 
 variable "folder_id" {
   description = "Folder ID"
-  type = string
+  type        = string
   default     = "changeit"
 }
 
