@@ -30,6 +30,7 @@ variable "vm_1_name" {
 
 variable "ssh_key" {
   description = "SSH Public Key"
+  sensitive   = true
   type = string
 }
 
