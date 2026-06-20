@@ -36,8 +36,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    command: sh -c "cp -r /app/build/. /frontend_static/"
-    restart: no
+    command: sh -c "cp -r /app/build/. /static/"
+    restart: 'no'
     volumes:
       - static:/static
     depends_on:

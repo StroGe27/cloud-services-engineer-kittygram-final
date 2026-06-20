@@ -30,7 +30,7 @@ services:
 
   frontend:
     image: stroge27/kittygram_frontend:latest
-    command: sh -c "cp -r /app/build/. /frontend_static/"
+    command: sh -c "cp -r /app/build/. /static/"
     restart: no
     volumes:
       - static:/static

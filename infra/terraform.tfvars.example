@@ -1,0 +1,2 @@
+folder_id      = "b1gxxxxxxxxxxxxxxxx"
+ssh_public_key = "ssh-ed25519 AAAA... user@host"
