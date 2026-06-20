@@ -1,2 +1,3 @@
-folder_id      = "b1gxxxxxxxxxxxxxxxx"
-ssh_public_key = "ssh-ed25519 AAAA... user@host"
+vm_1_name = "vm-kittygram"
+zone      = "ru-central1-b"
+ssh_key   = "ssh-rsa AAAA... user@host"
