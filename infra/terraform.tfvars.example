@@ -1,3 +1,7 @@
 vm_1_name = "vm-kittygram"
+cores   = "2"
+memory  = "2"
+core_fraction = "20"
+disk_size   = "20"
 zone      = "ru-central1-b"
-ssh_key   = "ssh-rsa AAAA... user@host"
+image_family = "ubuntu-2204-lts"

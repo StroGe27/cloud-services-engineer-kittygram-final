@@ -32,6 +32,7 @@ variable "ssh_key" {
   description = "SSH Public Key"
   sensitive   = true
   type = string
+  default     = "changeit"
 }
 
 variable "cloud_id" {
